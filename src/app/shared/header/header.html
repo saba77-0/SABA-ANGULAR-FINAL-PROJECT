@@ -1,0 +1,74 @@
+<header class="site-header">
+  <nav
+    class="navbar container"
+    [class.authenticated]="authService.isAuthenticated()"
+    aria-label="Main navigation"
+  >
+    <a class="brand text-decoration-none" routerLink="/" aria-label="STEP Trains home">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 17V8a7 7 0 0 1 14 0v9H5Z" />
+        <path d="M7 17v3m10-3v3M5 13h14M8 20h8" />
+      </svg>
+      <span class="brand-name"><strong>STEP</strong><span>TRAINS</span></span>
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-controls="header-menu"
+      [attr.aria-expanded]="menuOpen()"
+      [attr.aria-label]="menuOpen() ? 'Close navigation menu' : 'Open navigation menu'"
+      (click)="toggleMenu()"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div id="header-menu" class="nav-menu" [class.is-open]="menuOpen()">
+      <div class="nav-links navbar-nav flex-row">
+        <a
+          class="nav-link"
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="closeMenu()"
+          >Home</a
+        >
+        <a class="nav-link" routerLink="/trains" routerLinkActive="active" (click)="closeMenu()"
+          >Trains</a
+        >
+        @if (authService.isAuthenticated()) {
+          <a
+            class="nav-link"
+            routerLink="/profile"
+            routerLinkActive="active"
+            (click)="closeMenu()"
+            >My Profile</a
+          >
+        }
+      </div>
+
+      @if (!authService.isAuthenticated()) {
+        <div class="nav-actions">
+          <a
+            class="sign-in"
+            routerLink="/auth/login"
+            [queryParams]="{ returnUrl: returnUrl }"
+            (click)="closeMenu()"
+          >
+            Sign In
+          </a>
+          <a
+            class="nav-cta btn btn-primary"
+            routerLink="/auth/register"
+            [queryParams]="{ returnUrl: returnUrl }"
+            (click)="closeMenu()"
+          >
+            Get Started
+          </a>
+        </div>
+      }
+    </div>
+  </nav>
+</header>

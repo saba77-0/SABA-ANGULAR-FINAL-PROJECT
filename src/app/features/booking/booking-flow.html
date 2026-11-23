@@ -1,0 +1,308 @@
+<section class="booking-page">
+  <div class="container">
+    <a class="booking-back" routerLink="/trains">← Back to trains</a>
+
+    @if (loading()) {
+      <p class="booking-status" role="status">Loading your booking options…</p>
+    } @else if (error() && !schedule()) {
+      <p class="booking-error" role="alert">{{ error() }}</p>
+    } @else if (schedule(); as currentSchedule) {
+      <ol class="booking-progress" aria-label="Booking steps">
+        @for (label of ['Coach', 'Date', 'Seats', 'Confirm']; track label; let index = $index) {
+          <li
+            [class.is-complete]="
+              ['coach', 'date', 'seats', 'confirm'].indexOf(step()) > index
+            "
+            [class.is-current]="['coach', 'date', 'seats', 'confirm'].indexOf(step()) === index"
+          >
+            <span>{{ index + 1 }}</span>
+            <small>{{ label }}</small>
+          </li>
+        }
+      </ol>
+
+      <div class="booking-route">
+        <strong>{{ currentSchedule.origin }} <span aria-hidden="true">→</span> {{ currentSchedule.destination }}</strong>
+        <span>{{ currentSchedule.departureTime.slice(0, 5) }}</span>
+      </div>
+
+      @if (step() === 'coach') {
+        <div class="booking-step-content">
+          <h1>Select a Coach</h1>
+          <p>Choose the class of coach you’d like to travel in.</p>
+          @if (coaches().length) {
+            <svg class="coach-art-definitions" width="0" height="0" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="coach-shell" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#f8faf8" />
+                  <stop offset="0.28" stop-color="#c5ced1" />
+                  <stop offset="0.58" stop-color="#eef1ef" />
+                  <stop offset="1" stop-color="#929fa4" />
+                </linearGradient>
+                <linearGradient id="coach-roof" x1="0" y1="0" x2="0" y2="1">
+                  <stop stop-color="#ffffff" />
+                  <stop offset="1" stop-color="#aeb9bd" />
+                </linearGradient>
+                <linearGradient id="coach-glass" x1="0" y1="0" x2="0" y2="1">
+                  <stop stop-color="#31566c" />
+                  <stop offset="0.45" stop-color="#102538" />
+                  <stop offset="1" stop-color="#081521" />
+                </linearGradient>
+                <linearGradient id="coach-gold" x1="0" y1="0" x2="0" y2="1">
+                  <stop stop-color="#f2cb72" />
+                  <stop offset="0.5" stop-color="#d89a39" />
+                  <stop offset="1" stop-color="#a96c27" />
+                </linearGradient>
+                <linearGradient id="coach-wheel" x1="0" y1="0" x2="1" y2="1">
+                  <stop stop-color="#d5dddf" />
+                  <stop offset="0.5" stop-color="#75838c" />
+                  <stop offset="1" stop-color="#303b49" />
+                </linearGradient>
+                <filter id="coach-ground-shadow" x="-20%" y="-200%" width="140%" height="500%">
+                  <feGaussianBlur stdDeviation="4" />
+                </filter>
+                <g id="booking-wheel">
+                  <circle r="27" fill="#101725" stroke="#394653" stroke-width="3" />
+                  <circle r="20" fill="#202c39" stroke="#89969c" stroke-width="3" />
+                  <circle r="13" fill="url(#coach-wheel)" stroke="#d4dcde" stroke-width="2" />
+                  <circle r="5" fill="#26313d" />
+                  <circle cx="-5" cy="-6" r="3" fill="#eef2ef" opacity="0.65" />
+                </g>
+                <symbol id="booking-coach-art" viewBox="0 0 1008 222">
+                  <ellipse cx="504" cy="214" rx="430" ry="5" fill="#000" opacity="0.38" filter="url(#coach-ground-shadow)" />
+                  <path fill="#182433" d="M80 151h848v32H80z" />
+                  <path fill="#35414d" d="M117 154h213v24H117zm560 0h213v24H677z" />
+                  <g fill="none" stroke="#9ba6aa" stroke-width="4">
+                    <path d="M145 154v24m14-24v24m14-24v24m14-24v24m14-24v24m14-24v24m14-24v24m14-24v24" />
+                    <path d="M705 154v24m14-24v24m14-24v24m14-24v24m14-24v24m14-24v24m14-24v24m14-24v24" />
+                  </g>
+                  <use href="#booking-wheel" transform="translate(178 183)" />
+                  <use href="#booking-wheel" transform="translate(273 183)" />
+                  <use href="#booking-wheel" transform="translate(735 183)" />
+                  <use href="#booking-wheel" transform="translate(830 183)" />
+                  <path fill="url(#coach-shell)" stroke="#e8eeee" stroke-width="2" d="M83 48h812c40 0 66 18 79 55l20 42H18l26-65c9-22 19-32 39-32Z" />
+                  <path fill="url(#coach-roof)" d="M104 30h770c39 0 63 9 88 29H71c10-18 18-29 33-29Z" />
+                  <path fill="#172b3b" d="M61 68h876l22 68H39z" />
+                  <g fill="url(#coach-glass)" stroke="#aab8bd" stroke-width="3">
+                    <rect x="76" y="76" width="100" height="48" rx="5" />
+                    <rect x="195" y="76" width="100" height="48" rx="5" />
+                    <rect x="314" y="76" width="100" height="48" rx="5" />
+                    <rect x="433" y="76" width="100" height="48" rx="5" />
+                    <rect x="552" y="76" width="100" height="48" rx="5" />
+                    <rect x="671" y="76" width="100" height="48" rx="5" />
+                    <rect x="790" y="76" width="100" height="48" rx="5" />
+                  </g>
+                  <g fill="#dce8e9" opacity="0.42">
+                    <path d="M82 81h42l-27 37H82zm119 0h42l-27 37h-42zm119 0h42l-27 37h-42zm119 0h42l-27 37h-42zm119 0h42l-27 37h-42zm119 0h42l-27 37h-42zm119 0h42l-27 37h-42z" />
+                  </g>
+                  <path fill="url(#coach-shell)" stroke="#65737c" stroke-width="2" d="M906 70h39v68h-39z" />
+                  <rect x="912" y="77" width="27" height="36" rx="2" fill="url(#coach-glass)" stroke="#bec9cc" />
+                  <path fill="none" stroke="#596974" stroke-width="2" d="M916 116v19m20-19v19m-14-31v4" />
+                  <path fill="url(#coach-gold)" d="M31 137h944v6H31z" />
+                  <path fill="#e7813c" d="M40 145h927v2H40z" />
+                  <path fill="none" stroke="#f8faf8" stroke-width="2" opacity="0.7" d="M76 52h790" />
+                  <path fill="none" stroke="#72818a" stroke-width="2" opacity="0.7" d="M54 151h900" />
+                  <path stroke="#445363" stroke-width="5" d="M0 211h1008" />
+                </symbol>
+                <symbol id="booking-train-end-art" viewBox="0 0 880 248">
+                  <ellipse cx="440" cy="241" rx="365" ry="5" fill="#000" opacity="0.38" filter="url(#coach-ground-shadow)" />
+                  <path fill="#182433" d="M70 177h755v40H70z" />
+                  <path fill="#35414d" d="M166 178h182v29H166zm432 0h182v29H598z" />
+                  <g fill="none" stroke="#9ba6aa" stroke-width="5">
+                    <path d="M191 180v29m15-29v29m15-29v29m15-29v29m15-29v29m15-29v29m15-29v29m15-29v29" />
+                    <path d="M622 180v29m15-29v29m15-29v29m15-29v29m15-29v29m15-29v29m15-29v29m15-29v29" />
+                  </g>
+                  <use href="#booking-wheel" transform="translate(205 210)" />
+                  <use href="#booking-wheel" transform="translate(301 210)" />
+                  <use href="#booking-wheel" transform="translate(635 210)" />
+                  <use href="#booking-wheel" transform="translate(731 210)" />
+                  <path fill="url(#coach-shell)" stroke="#e8eeee" stroke-width="2" d="M28 179q16-14 37-21 28-10 45-41l47-78Q174 20 220 20h477q59 0 91 45l57 85q14 22 4 40z" />
+                  <path fill="url(#coach-roof)" d="M214 17h481q48 0 76 29H170q17-29 44-29Z" />
+                  <path fill="#172b3b" d="M103 145q29-13 46-43l35-55h513q31 0 46 33l33 65z" />
+                  <path fill="url(#coach-glass)" stroke="#b5c3c7" stroke-width="3" d="m138 120 32-52q10-16 29-19h76v68h-139zm153-71h91v71h-91zm108 0h82v71h-82zm99 0h82v71h-82zm99 0h82v71h-82z" />
+                  <g fill="#dce8e9" opacity="0.42">
+                    <path d="m151 112 27-43h29l-31 43zm152-55h35l-31 43zm108 0h33l-30 43zm99 0h33l-30 43zm99 0h33l-30 43z" />
+                  </g>
+                  <path fill="url(#coach-shell)" stroke="#61717b" stroke-width="2" d="M765 76h37l31 68h-68z" />
+                  <rect x="770" y="82" width="22" height="36" rx="3" fill="url(#coach-glass)" stroke="#c1cbce" stroke-width="2" />
+                  <path fill="none" stroke="#dce3e4" stroke-width="2" d="m116 112 25 8m-89 38q47-10 75-62" />
+                  <path fill="url(#coach-gold)" d="M53 151q48-12 81-66l3 8q-31 57-82 68zM135 148h671v7H135z" />
+                  <path fill="#e7813c" d="M51 160q50-13 87-70l2 4q-33 60-87 72zM139 157h667v3H139z" />
+                  <circle cx="71" cy="157" r="8" fill="#eaf3f2" stroke="#d38c45" stroke-width="3" />
+                  <circle cx="95" cy="151" r="5" fill="#e4eced" stroke="#657680" stroke-width="2" />
+                  <path fill="#182433" d="M30 179q22-7 45-8l-10 27H27z" />
+                  <path fill="#74838b" d="M43 198h45l-8 9H40z" />
+                  <path fill="none" stroke="#d3dddf" stroke-width="3" d="M449 28v-9h57v9m-43-9v-8h29v8" />
+                  <path stroke="#445363" stroke-width="5" d="M0 241h880" />
+                </symbol>
+              </defs>
+            </svg>
+            <div class="coach-composition train-composition">
+              <div
+                #coachOptions
+                class="coach-options train-composition__track"
+                [class.is-dragging]="draggingCoachCarousel()"
+                (pointerdown)="startCoachDrag($event, coachOptions)"
+                (pointermove)="moveCoachDrag($event, coachOptions)"
+                (pointerup)="endCoachDrag($event)"
+                (pointercancel)="endCoachDrag($event)"
+                (lostpointercapture)="endCoachDrag($event)"
+                (wheel)="scrollCoachWheel($event, coachOptions)"
+              >
+                <span class="coach-train-end train-composition__end" aria-hidden="true">
+                  <svg viewBox="0 0 880 248" focusable="false">
+                    <use href="#booking-train-end-art" />
+                  </svg>
+                </span>
+                @for (coach of coaches(); track coach.id) {
+                  <button
+                    type="button"
+                    class="coach-option train-carriage"
+                    [class.is-selected]="selectedCoach()?.id === coach.id"
+                    [attr.aria-pressed]="selectedCoach()?.id === coach.id"
+                    [attr.aria-label]="
+                      'Select Coach ' + coach.number + ', ' + coach.class + ' class, $' + coach.price
+                    "
+                    (click)="selectCoach(coach)"
+                  >
+                    <svg class="coach-car" viewBox="0 0 1008 222" aria-hidden="true" focusable="false">
+                      <use href="#booking-coach-art" />
+                    </svg>
+                    <span class="coach-info train-carriage__overlay">
+                      <span class="coach-number train-carriage__num">Coach {{ coach.number }}</span>
+                      <span class="coach-badge" [class.business]="coach.class === 'Business'">
+                        {{ coach.class }}
+                      </span>
+                      <span class="coach-count train-carriage__seats">{{ coach.seatCount }} seats</span>
+                      <strong class="coach-price train-carriage__price">${{ coach.price }}</strong>
+                    </span>
+                  </button>
+                }
+                <span class="coach-train-end coach-train-end--tail train-composition__end train-composition__end--tail" aria-hidden="true">
+                  <svg viewBox="0 0 880 248" focusable="false">
+                    <use href="#booking-train-end-art" />
+                  </svg>
+                </span>
+              </div>
+              <span class="coach-fade coach-fade--left train-composition__fade train-composition__fade--left" aria-hidden="true"></span>
+              <span class="coach-fade coach-fade--right train-composition__fade train-composition__fade--right" aria-hidden="true"></span>
+            </div>
+          } @else {
+            <p class="booking-status">No coaches are available for this train.</p>
+          }
+          <button class="btn btn-primary continue-button coach-continue" type="button" (click)="continueToDate()">
+            Continue
+          </button>
+        </div>
+      } @else if (step() === 'date') {
+        <div class="booking-step-content">
+          <button class="step-back" type="button" (click)="goBack('coach')">← Back to coaches</button>
+          <h1>Choose Travel Date</h1>
+          @if (selectedCoach(); as coach) {
+            <p>Coach {{ coach.number }} — {{ coach.class }} class</p>
+          }
+          <label for="travel-date">Travel date</label>
+          <input
+            id="travel-date"
+            class="form-control"
+            type="date"
+            [min]="today"
+            [ngModel]="travelDate()"
+            (ngModelChange)="travelDate.set($event)"
+          />
+          <button
+            class="btn btn-primary continue-button"
+            type="button"
+            [disabled]="loadingSeats()"
+            (click)="continueToSeats()"
+          >
+            {{ loadingSeats() ? 'Checking seats…' : 'Continue to Seats' }}
+          </button>
+        </div>
+      } @else if (step() === 'seats') {
+        <div class="booking-step-content">
+          <button class="step-back" type="button" (click)="goBack('date')">← Back to date</button>
+          <h1>Select Seats</h1>
+          <p>
+            Coach {{ selectedCoach()?.number }} — {{ selectedCoach()?.class }} class ·
+            {{ travelDate() }}
+          </p>
+          <div class="seat-selection-layout">
+            <div class="seat-selection-details">
+              @if (seats().length) {
+                <div class="seat-map" aria-label="Available seats">
+                  @for (seat of seats(); track seat.id) {
+                    <button
+                      type="button"
+                      class="seat"
+                      [class.is-selected]="selectedSeat(seat)"
+                      [class.is-booked]="!seat.isAvailable"
+                      [disabled]="!seat.isAvailable"
+                      [attr.aria-pressed]="selectedSeat(seat)"
+                      [attr.aria-label]="
+                        'Seat ' + seat.number + (seat.isAvailable ? ' available' : ' booked')
+                      "
+                      (click)="toggleSeat(seat)"
+                    >
+                      {{ seat.number }}
+                    </button>
+                  }
+                </div>
+                <div class="seat-legend">
+                  <span><i></i> Available</span>
+                  <span><i class="selected"></i> Selected</span>
+                  <span><i class="booked"></i> Booked</span>
+                </div>
+              } @else {
+                <p class="booking-status">No seats are available for this date and coach.</p>
+              }
+              @if (selectedSeats().length) {
+                <p class="selected-count">{{ selectedSeats().length }} seat(s) selected</p>
+              } @else {
+                <p class="selected-count">Select at least one seat.</p>
+              }
+            </div>
+            <button
+              class="btn btn-primary continue-button seat-continue"
+              type="button"
+              (click)="continueToConfirmation()"
+            >
+              Continue to Confirmation
+            </button>
+          </div>
+        </div>
+      } @else {
+        <div class="booking-step-content">
+          <h1>Confirm Your Booking</h1>
+          <dl class="booking-summary">
+            <div><dt>Route</dt><dd>{{ currentSchedule.origin }} → {{ currentSchedule.destination }}</dd></div>
+            <div><dt>Departure</dt><dd>{{ currentSchedule.departureTime.slice(0, 5) }}</dd></div>
+            <div>
+              <dt>Coach</dt>
+              <dd>{{ selectedCoach()?.number }} — {{ selectedCoach()?.class }}</dd>
+            </div>
+            <div><dt>Seats</dt><dd>{{ selectedSeats().map(seat => seat.number).join(', ') }}</dd></div>
+            <div><dt>Travel Date</dt><dd>{{ travelDate() }}</dd></div>
+            <div><dt>Price per seat</dt><dd>${{ selectedCoach()?.price }}</dd></div>
+            <div><dt>Total price</dt><dd>${{ totalPrice() }}</dd></div>
+          </dl>
+          <div class="confirmation-actions">
+            <button class="step-back" type="button" (click)="goBack('seats')">Go Back</button>
+            <button
+              class="btn btn-primary"
+              type="button"
+              [disabled]="submitting()"
+              (click)="confirmBooking()"
+            >
+              {{ submitting() ? 'Booking…' : 'Confirm Booking' }}
+            </button>
+          </div>
+        </div>
+      }
+
+      @if (error()) {
+        <p class="booking-error" role="alert">{{ error() }}</p>
+      }
+    }
+  </div>
+</section>

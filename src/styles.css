@@ -1,1 +1,141 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  color-scheme: dark;
+  --step-gold: #c9a84c;
+  --step-gold-light: #e2c97e;
+  --step-navy: #0d1226;
+  --step-navy-deep: #0a0e1a;
+  --step-surface: #111827;
+  --step-card: #131929;
+  --step-border: #2a3350;
+  --step-text: #f0e6c8;
+  --step-text-muted: #b8a882;
+  --step-text-subtle: #8a7f65;
+
+  --bs-body-bg: var(--step-navy);
+  --bs-body-color: var(--step-text);
+  --bs-emphasis-color: #fff;
+  --bs-secondary-color: var(--step-text-muted);
+  --bs-secondary-bg: var(--step-surface);
+  --bs-tertiary-bg: #1a2235;
+  --bs-primary: var(--step-gold);
+  --bs-primary-rgb: 201, 168, 76;
+  --bs-link-color: var(--step-gold-light);
+  --bs-link-hover-color: #f0d88a;
+  --bs-border-color: var(--step-border);
+  --bs-border-color-translucent: rgba(201, 168, 76, 0.18);
+  --bs-font-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  font-family: var(--bs-font-sans-serif);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--step-navy);
+  color: var(--step-text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0;
+  background: var(--step-navy);
+}
+
+body {
+  color: var(--step-text);
+  font-family: var(--bs-font-sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+app-root {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+.container {
+  max-width: 1080px;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+a {
+  color: var(--step-gold-light);
+}
+
+a:hover {
+  color: #f0d88a;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.btn,
+button[type="submit"],
+.book-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--step-gold-light);
+  outline-offset: 3px;
+}
+
+.btn-primary {
+  --bs-btn-color: #101525;
+  --bs-btn-bg: var(--step-gold);
+  --bs-btn-border-color: var(--step-gold);
+  --bs-btn-hover-color: #101525;
+  --bs-btn-hover-bg: var(--step-gold-light);
+  --bs-btn-hover-border-color: var(--step-gold-light);
+  --bs-btn-active-color: #101525;
+  --bs-btn-active-bg: #b8942a;
+  --bs-btn-active-border-color: #b8942a;
+  --bs-btn-disabled-color: #101525;
+  --bs-btn-disabled-bg: var(--step-gold);
+  --bs-btn-disabled-border-color: var(--step-gold);
+  font-weight: 600;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--step-gold-light);
+  --bs-btn-border-color: rgba(201, 168, 76, 0.6);
+  --bs-btn-hover-color: #101525;
+  --bs-btn-hover-bg: var(--step-gold-light);
+  --bs-btn-hover-border-color: var(--step-gold-light);
+  --bs-btn-active-color: #101525;
+  --bs-btn-active-bg: var(--step-gold);
+  --bs-btn-active-border-color: var(--step-gold);
+  font-weight: 600;
+}
+
+::selection {
+  background: rgba(201, 168, 76, 0.4);
+  color: #fff;
+}

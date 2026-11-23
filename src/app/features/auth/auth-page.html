@@ -1,0 +1,214 @@
+<section
+  class="auth-page"
+  [class.auth-split-page]="mode === 'register' || mode === 'signin'"
+>
+  @if (mode === 'register' || mode === 'signin') {
+    <aside class="auth-promo" aria-label="STEP Trains">
+      <div class="auth-promo-inner">
+        <div class="auth-promo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="7" width="16" height="13" rx="2" />
+            <path d="M8 7V5a4 4 0 0 1 8 0v2M9 10v7m6-7v7" />
+          </svg>
+        </div>
+        <h2>STEP TRAINS</h2>
+        <p>Book train tickets and manage your trips with your account.</p>
+        <div class="auth-stats" aria-label="STEP Trains at a glance">
+          <div class="auth-stat">
+            <strong>500+</strong>
+            <span>ROUTES</span>
+          </div>
+          <div class="auth-stat">
+            <strong>50+</strong>
+            <span>STATIONS</span>
+          </div>
+          <div class="auth-stat">
+            <strong>24/7</strong>
+            <span>SUPPORT</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  }
+
+  <div class="auth-card">
+    <div class="auth-icon" aria-hidden="true">
+      @if (mode === 'signin') {
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M10 17l5-5-5-5M15 12H3m11-8h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5" />
+        </svg>
+      } @else {
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="4" />
+          <path d="M4.5 21v-2a7.5 7.5 0 0 1 15 0v2" />
+        </svg>
+      }
+    </div>
+
+    <h1>
+      {{
+        mode === 'register'
+          ? 'Create Your Account'
+        : mode === 'forgot' || mode === 'reset'
+            ? 'Reset Password'
+            : 'Welcome Back'
+      }}
+    </h1>
+    <p class="auth-copy">
+      {{
+        mode === 'register'
+          ? 'Join thousands of travelers today'
+          : mode === 'forgot'
+            ? 'Enter your email address and we will send a reset link.'
+            : mode === 'reset'
+              ? 'Choose a new password for your account.'
+              : 'Sign in to book your next trip'
+      }}
+    </p>
+
+    @if (successMessage()) {
+      <div class="auth-success" role="status">
+        <span>{{ successMessage() }}</span>
+        <button type="button" aria-label="Dismiss notification" (click)="dismissSuccessMessage()">
+          ×
+        </button>
+      </div>
+    }
+
+    <form (ngSubmit)="submit()" novalidate>
+      @if (mode === 'register') {
+        <div class="name-fields">
+          <div class="field-wrap">
+            <label class="visually-hidden" for="first-name">First name</label>
+            <input
+              id="first-name"
+              class="form-control"
+              name="firstName"
+              placeholder="First name"
+              autocomplete="given-name"
+              required
+              [ngModel]="firstName()"
+              (ngModelChange)="firstName.set($event)"
+            />
+          </div>
+          <div class="field-wrap">
+            <label class="visually-hidden" for="last-name">Last name</label>
+            <input
+              id="last-name"
+              class="form-control"
+              name="lastName"
+              placeholder="Last name"
+              autocomplete="family-name"
+              required
+              [ngModel]="lastName()"
+              (ngModelChange)="lastName.set($event)"
+            />
+          </div>
+        </div>
+      }
+
+      @if (mode !== 'reset') {
+        <div class="field-wrap">
+          <label class="visually-hidden" for="email">Email address</label>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="m4 7 8 6 8-6" />
+          </svg>
+          <input
+            id="email"
+            class="form-control"
+            name="email"
+            type="email"
+            placeholder="Email address"
+            autocomplete="email"
+            required
+            [ngModel]="email()"
+            (ngModelChange)="email.set($event)"
+          />
+        </div>
+      }
+
+      @if (mode !== 'forgot') {
+        <div class="field-wrap">
+          <label class="visually-hidden" for="password">Password</label>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="11" rx="2" />
+            <path d="M8 10V7a4 4 0 1 1 8 0v3" />
+          </svg>
+          <input
+            id="password"
+            class="form-control"
+            name="password"
+            type="password"
+            [placeholder]="mode === 'register' || mode === 'reset' ? 'Password (min. 6 characters)' : 'Password'"
+            [autocomplete]="mode === 'register' || mode === 'reset' ? 'new-password' : 'current-password'"
+            [attr.minlength]="mode === 'register' || mode === 'reset' ? 6 : null"
+            required
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+          />
+        </div>
+      }
+
+      @if (mode === 'signin') {
+        <div class="auth-options">
+          <label class="remember-option">
+            <input
+              type="checkbox"
+              name="rememberMe"
+              [ngModel]="rememberMe()"
+              (ngModelChange)="rememberMe.set($event)"
+            />
+            <span>Remember me</span>
+          </label>
+          <a routerLink="/auth/forgot-password">Forgot password?</a>
+        </div>
+      }
+
+      @if (error()) {
+        <p class="auth-error" role="alert">{{ error() }}</p>
+      }
+
+      @if (mode === 'signin' && verificationRequired()) {
+        <p class="verification-link">
+          <a [routerLink]="['/auth/verification', email()]" [queryParams]="authQueryParams">
+            Enter your verification code
+          </a>
+        </p>
+      }
+
+      <button class="auth-submit btn btn-primary" type="submit" [disabled]="submitting()">
+        {{
+          submitting()
+            ? 'Please wait…'
+            : mode === 'register'
+              ? 'Create Account'
+              : mode === 'forgot'
+                ? 'Send Reset Link'
+                : mode === 'reset'
+                  ? 'Reset Password'
+                  : 'Sign In'
+        }}
+      </button>
+    </form>
+
+    @if (mode === 'register' || mode === 'signin') {
+      <div class="auth-divider"><span>or</span></div>
+      <p class="auth-switch">
+        {{ mode === 'register' ? 'Already have an account?' : "Don't have an account?" }}
+        <a
+          [routerLink]="mode === 'register' ? '/auth/signin' : '/auth/register'"
+          [queryParams]="authQueryParams"
+        >
+          {{ mode === 'register' ? 'Sign in' : 'Create one now' }}
+        </a>
+      </p>
+    } @else {
+      <p class="auth-switch">
+        <a routerLink="/auth/signin" [queryParams]="mode === 'forgot' ? authQueryParams : null">
+          Back to Sign In
+        </a>
+      </p>
+    }
+  </div>
+</section>

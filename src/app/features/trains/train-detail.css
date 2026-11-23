@@ -1,0 +1,238 @@
+:host {
+  display: block;
+}
+
+.detail-page {
+  min-height: calc(100vh - 156px);
+  padding: clamp(2.2rem, 5vw, 3.5rem) 0;
+  background:
+    radial-gradient(ellipse at 82% 0, rgba(201, 168, 76, 0.06), transparent 30rem),
+    var(--step-navy);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.1rem;
+  color: var(--step-text-subtle);
+  font-size: 0.76rem;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: var(--step-gold-light);
+}
+
+.train-overview {
+  display: grid;
+  grid-template-columns: minmax(240px, 275px) minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2.2rem;
+}
+
+.train-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.3;
+  border-radius: 12px;
+  background: var(--step-card);
+  object-fit: cover;
+}
+
+.train-heading {
+  align-self: center;
+}
+
+.train-label {
+  margin: 0 0 0.75rem;
+  color: var(--step-gold);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.train-heading h1 {
+  margin: 0 0 0.8rem;
+  color: var(--step-text);
+  font-size: clamp(1.8rem, 4vw, 2.45rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.statistics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.7rem;
+}
+
+.statistic {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.statistic span {
+  color: var(--step-text-subtle);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.statistic strong {
+  color: var(--step-text);
+  font-size: 0.95rem;
+}
+
+.detail-tabs {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--step-border);
+}
+
+.detail-tab {
+  min-width: 112px;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--step-text-muted);
+  font-size: 0.75rem;
+}
+
+.detail-tab[aria-selected="true"] {
+  border-bottom-color: var(--step-gold);
+  color: var(--step-gold-light);
+}
+
+.detail-content {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.schedule-row,
+.coach-row {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  gap: 1.4rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(42, 51, 80, 0.55);
+  border-radius: 13px;
+  background: var(--step-card);
+}
+
+.schedule-route {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 1rem;
+  color: var(--step-text);
+  font-size: 0.78rem;
+}
+
+.route-arrow {
+  color: var(--step-gold);
+}
+
+.departure-time {
+  color: var(--step-text-subtle);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.departure-time span {
+  margin-right: 0.3rem;
+}
+
+.book-button {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--step-gold);
+  border-radius: 7px;
+  background: var(--step-gold);
+  color: #0a0e1a;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.book-button:hover {
+  border-color: var(--step-gold-light);
+  background: var(--step-gold-light);
+  color: #0a0e1a;
+}
+
+.coach-row {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  color: var(--step-text);
+  font-size: 0.78rem;
+}
+
+.coach-class {
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(36, 132, 83, 0.16);
+  color: #71c99a;
+  font-size: 0.65rem;
+}
+
+.coach-class-business {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.coach-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-left: auto;
+  color: var(--step-text-muted);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.coach-price {
+  color: var(--step-gold-light);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.empty-state,
+.status-message {
+  padding: 1.25rem;
+  color: var(--step-text-muted);
+}
+
+.error-message {
+  color: #e98a8a;
+}
+
+@media (max-width: 575px) {
+  .train-overview {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .train-image {
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  .schedule-row {
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+  }
+
+  .schedule-route {
+    min-width: 100%;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .book-button {
+    margin-left: auto;
+  }
+}

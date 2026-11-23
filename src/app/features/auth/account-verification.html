@@ -1,0 +1,127 @@
+<section class="verification-page">
+  <aside class="verification-promo" aria-labelledby="verification-promo-title">
+    <div class="verification-promo-inner">
+      <div class="verification-promo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="7" width="16" height="13" rx="2" />
+          <path d="M8 7V5a4 4 0 0 1 8 0v2M9 10v7m6-7v7" />
+        </svg>
+      </div>
+      <h1 id="verification-promo-title">Almost There!</h1>
+      <p>Just one more step to start booking your train tickets.</p>
+
+      <div class="verification-benefits">
+        <div class="verification-benefit">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3 19 6v5c0 4.7-3 8-7 10-4-2-7-5.3-7-10V6l7-3Z" />
+            </svg>
+          </span>
+          <span>
+            <strong>Secure Account</strong>
+            <small>Your account security is our priority</small>
+          </span>
+        </div>
+        <div class="verification-benefit">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="m5 12 4 4L19 6" />
+            </svg>
+          </span>
+          <span>
+            <strong>Quick Process</strong>
+            <small>Verification takes less than a minute</small>
+          </span>
+        </div>
+        <div class="verification-benefit">
+          <span class="benefit-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="9" cy="8" r="3" />
+              <path d="M3 20v-1a6 6 0 0 1 12 0v1m2-9a3 3 0 1 0 0-6m1 9a5 5 0 0 1 3 4v1" />
+            </svg>
+          </span>
+          <span>
+            <strong>Join the Community</strong>
+            <small>50,000+ verified travelers</small>
+          </span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="verification-panel">
+    @if (message()) {
+      <div class="verification-toast" role="status">
+        <span>{{ message() }}</span>
+        <button type="button" aria-label="Dismiss notification" (click)="dismissMessage()">×</button>
+      </div>
+    }
+
+    <div class="verification-card">
+      <div class="verification-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="m4 7 8 6 8-6" />
+        </svg>
+      </div>
+      <h2>Verify Your Email</h2>
+      <p class="verification-copy">
+        We've sent a 6-digit code to <strong>{{ email }}</strong>
+      </p>
+
+      <form (ngSubmit)="verify()" novalidate>
+        <label class="visually-hidden" for="verification-code">Verification code</label>
+        <div class="verification-input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="5" y="10" width="14" height="11" rx="2" />
+            <path d="M8 10V7a4 4 0 1 1 8 0v3" />
+          </svg>
+          <input
+            id="verification-code"
+            class="form-control"
+            name="code"
+            type="text"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="6"
+            placeholder="Enter 6-digit code"
+            required
+            [ngModel]="code()"
+            (ngModelChange)="code.set($event)"
+          />
+        </div>
+
+        @if (error()) {
+          <p class="verification-error" role="alert">{{ error() }}</p>
+        }
+
+        <button class="btn btn-primary" type="submit" [disabled]="submitting() || resending()">
+          @if (submitting()) {
+            Verifying…
+          } @else {
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m5 12 4 4L19 6" />
+            </svg>
+            Verify Email
+          }
+        </button>
+      </form>
+
+      <div class="verification-resend">
+        <p>Didn't receive the code?</p>
+        <button
+          class="resend-button"
+          type="button"
+          [disabled]="submitting() || resending()"
+          (click)="resendCode()"
+        >
+          {{ resending() ? 'Sending…' : 'Resend Code' }}
+        </button>
+      </div>
+
+      <p class="verification-footer">
+        <a routerLink="/auth/signin" [queryParams]="queryParams">← &nbsp;Back to Login</a>
+      </p>
+    </div>
+  </div>
+</section>

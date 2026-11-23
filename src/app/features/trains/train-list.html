@@ -1,0 +1,89 @@
+<section class="list-page py-5">
+  <div class="container">
+    <div class="page-heading">
+      <p class="eyebrow">STEP TRAINS</p>
+      <h1>Find your <span>next train.</span></h1>
+      <p>Explore available routes and choose the schedule that works for you.</p>
+    </div>
+
+    <div class="results-layout">
+      <aside class="filters" aria-label="Search and filter trains">
+        <form class="filter-panel" (ngSubmit)="applyTrainSearch()">
+          <h2>Search</h2>
+          <label for="train-search">Train number</label>
+          <input
+            id="train-search"
+            class="form-control"
+            type="search"
+            placeholder="e.g. Express, 42..."
+            [value]="trainSearchTerm()"
+            (input)="updateTrainSearch($event)"
+          />
+          <button class="btn btn-primary filter-button" type="submit">Search</button>
+        </form>
+
+        <form class="filter-panel route-filter" (ngSubmit)="searchTrains()">
+          <h2>Filter by route</h2>
+          @if (stationsError()) {
+            <p class="status-message error-message" role="alert">{{ stationsError() }}</p>
+          } @else {
+            <label for="origin-filter">From</label>
+            <select
+              id="origin-filter"
+              class="form-select"
+              [value]="selectedOrigin()"
+              (change)="updateOrigin($event)"
+            >
+              <option value="">Any origin</option>
+              @for (station of availableOrigins(); track station.id) {
+                <option [value]="station.name">{{ station.name }}</option>
+              }
+            </select>
+
+            <label for="destination-filter">To</label>
+            <select
+              id="destination-filter"
+              class="form-select"
+              [value]="selectedDestination()"
+              (change)="updateDestination($event)"
+            >
+              <option value="">Any destination</option>
+              @for (station of availableDestinations(); track station.id) {
+                <option [value]="station.name">{{ station.name }}</option>
+              }
+            </select>
+
+            <button class="btn btn-primary filter-button" type="submit">Apply Filter</button>
+            <button class="clear-button" type="button" (click)="clearFilters()">Clear</button>
+          }
+        </form>
+      </aside>
+
+      <div class="results-content">
+        @if (!trainsLoading() && !trainsError()) {
+          <p class="result-count">{{ visibleTrains().length }} trains found</p>
+        }
+
+        @if (trainsLoading()) {
+          <p class="status-message" role="status">Loading train schedules…</p>
+        } @else if (trainsError()) {
+          <p class="status-message error-message" role="alert">{{ trainsError() }}</p>
+        } @else if (visibleTrains().length > 0) {
+          <div class="train-list">
+            @for (train of visibleTrains(); track train.id) {
+              <app-train-card
+                [train]="train"
+                [details]="trainDetailsById().get(train.trainId) ?? null"
+              />
+            }
+          </div>
+        } @else {
+          <div class="empty-state text-center py-4">
+            <span aria-hidden="true">↔</span>
+            <p>No trains were found for those search filters.</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

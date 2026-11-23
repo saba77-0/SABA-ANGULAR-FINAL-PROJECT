@@ -1,0 +1,120 @@
+<form class="search-panel" (ngSubmit)="submitSearch()" (keydown)="onSearchKeydown($event)">
+  <div class="search-field search-field--origin">
+    <label for="from-station">From</label>
+    <input
+      id="from-station"
+      class="form-control"
+      name="fromStation"
+      type="text"
+      placeholder="Origin city or station"
+      autocomplete="off"
+      role="combobox"
+      aria-autocomplete="list"
+      aria-controls="from-station-options"
+      [attr.aria-expanded]="fromOpen()"
+      [attr.aria-activedescendant]="activeOriginIndex() >= 0 ? 'from-station-option-' + activeOriginIndex() : null"
+      [ngModel]="fromStation()"
+      (focus)="openFromOptions()"
+      (ngModelChange)="updateOrigin($event)"
+      (keydown)="onOriginKeydown($event)"
+    />
+    @if (fromOpen()) {
+      <div
+        id="from-station-options"
+        class="station-dropdown"
+        [class.station-dropdown--above]="dropdownAbove()"
+        [style.max-height.px]="dropdownMaxHeight()"
+        role="listbox"
+      >
+        @if (filteredOrigins().length) {
+          @for (station of filteredOrigins(); track station.id) {
+            <button
+              [id]="'from-station-option-' + $index"
+              type="button"
+              class="station-option"
+              [class.station-option--active]="activeOriginIndex() === $index"
+              role="option"
+              [attr.aria-selected]="selectedOrigin()?.id === station.id"
+              (click)="selectOrigin(station)"
+            >
+              {{ station.name }}
+            </button>
+          }
+        } @else {
+          <div class="station-dropdown__status">No stations found.</div>
+        }
+      </div>
+    }
+  </div>
+
+  <span class="route-arrow" aria-hidden="true">→</span>
+
+  <div class="search-field search-field--destination">
+    <label for="to-station">To</label>
+    <input
+      id="to-station"
+      class="form-control"
+      name="toStation"
+      type="text"
+      placeholder="Destination city or station"
+      autocomplete="off"
+      role="combobox"
+      aria-autocomplete="list"
+      aria-controls="to-station-options"
+      [attr.aria-expanded]="toOpen()"
+      [attr.aria-activedescendant]="activeDestinationIndex() >= 0 ? 'to-station-option-' + activeDestinationIndex() : null"
+      [ngModel]="toStation()"
+      [disabled]="!selectedOrigin()"
+      (focus)="openToOptions()"
+      (ngModelChange)="updateDestination($event)"
+      (keydown)="onDestinationKeydown($event)"
+    />
+    @if (toOpen()) {
+      <div
+        id="to-station-options"
+        class="station-dropdown"
+        [class.station-dropdown--above]="dropdownAbove()"
+        [style.max-height.px]="dropdownMaxHeight()"
+        role="listbox"
+      >
+        @if (destinationLoading()) {
+          <div class="station-dropdown__status" role="status">Loading destinations…</div>
+        } @else if (filteredDestinations().length) {
+          @for (station of filteredDestinations(); track station.id) {
+            <button
+              [id]="'to-station-option-' + $index"
+              type="button"
+              class="station-option"
+              [class.station-option--active]="activeDestinationIndex() === $index"
+              role="option"
+              [attr.aria-selected]="toStation() === station.name"
+              (click)="selectDestination(station)"
+            >
+              {{ station.name }}
+            </button>
+          }
+        } @else {
+          <div class="station-dropdown__status">
+            {{ destinationError() || 'No destinations found.' }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <button class="search-button btn btn-primary" type="submit">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="10.8" cy="10.8" r="6.3" />
+      <path d="m15.4 15.4 4.1 4.1" />
+    </svg>
+    Search
+  </button>
+
+  @if (destinationError()) {
+    <p class="validation-message" role="alert">{{ destinationError() }}</p>
+  }
+
+  @if (validationMessage()) {
+    <p class="validation-message" role="alert">{{ validationMessage() }}</p>
+  }
+</form>

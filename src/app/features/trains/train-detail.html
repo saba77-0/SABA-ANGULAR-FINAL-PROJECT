@@ -1,0 +1,121 @@
+<section class="detail-page">
+  <div class="container">
+    <a class="back-link" routerLink="/trains">
+      <span aria-hidden="true">←</span>
+      Back to trains
+    </a>
+
+    @if (loading()) {
+      <p class="status-message" role="status">Loading train details…</p>
+    } @else if (error()) {
+      <p class="status-message error-message" role="alert">{{ error() }}</p>
+    } @else if (train(); as currentTrain) {
+      <section class="train-overview" aria-labelledby="train-name">
+        <img
+          class="train-image"
+          [src]="currentTrain.thumbnail || '/train-placeholder.svg'"
+          [alt]="currentTrain.name + ' train'"
+          (error)="useFallbackImage($event)"
+        />
+        <div class="train-heading">
+          <p class="train-label">TRAIN #{{ currentTrain.number }}</p>
+          <h1 id="train-name">{{ currentTrain.name }}</h1>
+          <div class="statistics">
+            <div class="statistic">
+              <span>Coaches</span>
+              <strong>{{ currentTrain.coachesCount }}</strong>
+            </div>
+            <div class="statistic">
+              <span>Total seats</span>
+              <strong>{{ currentTrain.totalSeats }}</strong>
+            </div>
+            <div class="statistic">
+              <span>Schedules</span>
+              <strong>{{ currentTrain.schedules.length }}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="detail-tabs" role="tablist" aria-label="Train details">
+        <button
+          id="schedules-tab"
+          class="detail-tab"
+          type="button"
+          role="tab"
+          [attr.aria-selected]="activeTab() === 'schedules'"
+          aria-controls="schedules-panel"
+          (click)="activeTab.set('schedules')"
+        >
+          Schedules ({{ currentTrain.schedules.length }})
+        </button>
+        <button
+          id="coaches-tab"
+          class="detail-tab"
+          type="button"
+          role="tab"
+          [attr.aria-selected]="activeTab() === 'coaches'"
+          aria-controls="coaches-panel"
+          (click)="activeTab.set('coaches')"
+        >
+          Coaches ({{ currentTrain.coaches.length }})
+        </button>
+      </div>
+
+      @if (activeTab() === 'schedules') {
+        <div id="schedules-panel" class="detail-content" role="tabpanel" aria-labelledby="schedules-tab">
+          @if (currentTrain.schedules.length > 0) {
+            @for (schedule of currentTrain.schedules; track schedule.id) {
+              <article class="schedule-row">
+                <div class="schedule-route">
+                  <strong>{{ schedule.origin }}</strong>
+                  <span class="route-arrow" aria-hidden="true">→</span>
+                  <strong>{{ schedule.destination }}</strong>
+                </div>
+                <span class="departure-time">
+                  <span aria-hidden="true">◷</span>
+                  {{ schedule.departureTime.slice(0, 5) }}
+                </span>
+                <a
+                  class="book-button"
+                  [routerLink]="authService.isAuthenticated() ? ['/book'] : ['/auth/signin']"
+                  [queryParams]="
+                    authService.isAuthenticated()
+                      ? { scheduledId: schedule.id, trainId: currentTrain.id }
+                      : { returnUrl: bookingReturnUrl(schedule.id, currentTrain.id) }
+                  "
+                >
+                  {{ authService.isAuthenticated() ? 'Book' : 'Sign in to book' }}
+                </a>
+              </article>
+            }
+          } @else {
+            <p class="empty-state">No schedules are available for this train.</p>
+          }
+        </div>
+      } @else {
+        <div id="coaches-panel" class="detail-content coach-list" role="tabpanel" aria-labelledby="coaches-tab">
+          @if (currentTrain.coaches.length > 0) {
+            @for (coach of currentTrain.coaches; track coach.id) {
+              <article class="coach-row">
+                <strong>Coach {{ coach.number }}</strong>
+                <span
+                  class="coach-class"
+                  [class.coach-class-business]="coach.class === 'Business'"
+                >
+                  {{ coach.class }}
+                </span>
+                <div class="coach-meta">
+                  <span>{{ coach.seatCount }} seats</span>
+                  <span class="coach-price">{{ '$' + coach.price }}</span>
+                </div>
+              </article>
+            }
+          } @else {
+            <p class="empty-state">No coaches are available for this train.</p>
+          }
+        </div>
+      }
+    }
+  </div>
+</section>

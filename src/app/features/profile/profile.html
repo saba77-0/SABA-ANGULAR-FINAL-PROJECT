@@ -1,0 +1,352 @@
+<section class="profile-page">
+  <div class="profile-layout">
+    <aside class="profile-sidebar" aria-label="Profile navigation">
+      <div class="profile-identity">
+        <div class="profile-avatar" aria-hidden="true">{{ initials() }}</div>
+        <h1>{{ displayName() }}</h1>
+        <p>{{ user()?.email || 'Loading account…' }}</p>
+      </div>
+
+      <nav class="profile-menu">
+        <a routerLink="/profile" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="3" />
+            <path d="M5 21v-1a7 7 0 0 1 14 0v1" />
+          </svg>
+          My Profile
+        </a>
+        <a routerLink="/profile/bookings" routerLinkActive="active">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3.5" y="5" width="17" height="16" rx="1.5" />
+            <path d="M8 3v4m8-4v4M3.5 10h17" />
+          </svg>
+          My Bookings
+        </a>
+        <a routerLink="/profile/settings" routerLinkActive="active">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="3" />
+            <path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z" />
+          </svg>
+          Settings
+        </a>
+      </nav>
+
+      <button class="sign-out-button" type="button" (click)="signOut()">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10 17l5-5-5-5m5 5H3m11-8h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5" />
+        </svg>
+        Sign Out
+      </button>
+    </aside>
+
+    <main class="profile-content">
+      @if (message()) {
+        <div class="profile-notice" role="status">
+          <span>{{ message() }}</span>
+          <button type="button" aria-label="Dismiss notification" (click)="dismissMessage()">×</button>
+        </div>
+      }
+
+      @if (section === 'profile') {
+        <section class="profile-panel">
+          <header class="panel-heading">
+            <h2>Personal Information</h2>
+            <p>Update your name, contact details and date of birth.</p>
+          </header>
+
+          @if (loading()) {
+            <p class="profile-status" role="status">Loading your profile…</p>
+          } @else {
+            <form class="profile-form" (ngSubmit)="saveProfile()" novalidate>
+              <div class="profile-field full-width">
+                <label for="profile-picture">Picture URL</label>
+                <input
+                  id="profile-picture"
+                  class="form-control"
+                  name="pictureUrl"
+                  type="url"
+                  placeholder="https://"
+                  [ngModel]="pictureUrl()"
+                  (ngModelChange)="pictureUrl.set($event)"
+                />
+              </div>
+              <div class="profile-field">
+                <label for="profile-first-name">First name</label>
+                <input
+                  id="profile-first-name"
+                  class="form-control"
+                  name="firstName"
+                  autocomplete="given-name"
+                  required
+                  [ngModel]="firstName()"
+                  (ngModelChange)="firstName.set($event)"
+                />
+              </div>
+              <div class="profile-field">
+                <label for="profile-last-name">Last name</label>
+                <input
+                  id="profile-last-name"
+                  class="form-control"
+                  name="lastName"
+                  autocomplete="family-name"
+                  required
+                  [ngModel]="lastName()"
+                  (ngModelChange)="lastName.set($event)"
+                />
+              </div>
+              <div class="profile-field full-width">
+                <label for="profile-email">Email address</label>
+                <input
+                  id="profile-email"
+                  class="form-control"
+                  name="email"
+                  type="email"
+                  readonly
+                  required
+                  [ngModel]="email()"
+                  (ngModelChange)="email.set($event)"
+                />
+              </div>
+              <div class="profile-field full-width">
+                <label for="profile-phone">Phone number</label>
+                <input
+                  id="profile-phone"
+                  class="form-control"
+                  name="phoneNumber"
+                  type="tel"
+                  autocomplete="tel"
+                  placeholder="e.g. +1 555 0100"
+                  [ngModel]="phoneNumber()"
+                  (ngModelChange)="phoneNumber.set($event)"
+                />
+              </div>
+              <div class="profile-field full-width">
+                <label for="profile-address">Address</label>
+                <input
+                  id="profile-address"
+                  class="form-control"
+                  name="address"
+                  autocomplete="street-address"
+                  placeholder="Your address"
+                  [ngModel]="address()"
+                  (ngModelChange)="address.set($event)"
+                />
+              </div>
+              <div class="profile-field full-width">
+                <label for="profile-date-of-birth">Date of birth</label>
+                <input
+                  id="profile-date-of-birth"
+                  class="form-control"
+                  name="dateOfBirth"
+                  type="date"
+                  [ngModel]="dateOfBirth()"
+                  (ngModelChange)="dateOfBirth.set($event)"
+                />
+              </div>
+
+              @if (error()) {
+                <p class="profile-error full-width" role="alert">{{ error() }}</p>
+              }
+              <div class="form-actions full-width">
+                <button class="btn btn-primary" type="submit" [disabled]="saving()">
+                  {{ saving() ? 'Saving…' : 'Save Changes' }}
+                </button>
+              </div>
+            </form>
+          }
+        </section>
+      } @else if (section === 'bookings') {
+        <section class="profile-panel bookings-panel">
+          <header class="panel-heading">
+            <h2>My Bookings</h2>
+            <p>View and manage all your train reservations.</p>
+          </header>
+
+          <form class="booking-filters" (ngSubmit)="filterBookings()">
+            <div class="profile-field">
+              <label for="booking-from">From date</label>
+              <input
+                id="booking-from"
+                class="form-control"
+                type="date"
+                name="fromDate"
+                [ngModel]="fromDate()"
+                (ngModelChange)="fromDate.set($event)"
+              />
+            </div>
+            <div class="profile-field">
+              <label for="booking-to">To date</label>
+              <input
+                id="booking-to"
+                class="form-control"
+                type="date"
+                name="toDate"
+                [ngModel]="toDate()"
+                (ngModelChange)="toDate.set($event)"
+              />
+            </div>
+            <button class="btn btn-primary" type="submit">Filter</button>
+            <button class="text-button" type="button" (click)="clearBookingFilters()">Clear</button>
+          </form>
+
+          @if (bookingsLoading()) {
+            <p class="profile-status" role="status">Loading your bookings…</p>
+          } @else if (bookingsError()) {
+            <p class="profile-error" role="alert">{{ bookingsError() }}</p>
+          } @else if (bookings().length) {
+            <div class="booking-list">
+              @for (booking of bookings(); track booking.id) {
+                <article class="booking-card">
+                  <div class="booking-card-route">
+                    <strong>{{ bookingOrigin(booking) }}</strong>
+                    <span aria-hidden="true">→</span>
+                    <strong>{{ bookingDestination(booking) }}</strong>
+                    <p>
+                      {{ bookingTrainName(booking) }}
+                      @if (bookingTrainNumber(booking); as number) {
+                        #{{ number }}
+                      }
+                      · {{ bookingDeparture(booking) }} · {{ booking.travelDate | date: 'mediumDate' }}
+                    </p>
+                  </div>
+                  <span class="booking-class">{{ booking.coach?.class ?? booking.coachClass ?? 'Coach' }}</span>
+                  <span class="booking-seat">Seat {{ bookingSeats(booking) }}</span>
+                  @if (bookingPrice(booking); as price) {
+                    <strong class="booking-price">${{ price }}</strong>
+                  }
+                  <a class="detail-button" [routerLink]="['/profile/bookings', booking.id]">Details</a>
+                </article>
+              }
+            </div>
+          } @else {
+            <div class="empty-bookings">
+              <svg class="empty-bookings-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3.5" y="5" width="17" height="16" rx="1.5" />
+                <path d="M8 3v4m8-4v4M3.5 10h17" />
+              </svg>
+              <h3>No bookings yet</h3>
+              <p>When you book a train, your reservations will appear here.</p>
+              <a class="btn btn-primary" routerLink="/trains">Browse Trains</a>
+            </div>
+          }
+        </section>
+      } @else if (section === 'booking-details') {
+        <section class="profile-panel booking-detail-panel">
+          @if (bookingLoading()) {
+            <p class="profile-status" role="status">Loading booking details…</p>
+          } @else if (error()) {
+            <p class="profile-error" role="alert">{{ error() }}</p>
+          } @else if (booking(); as currentBooking) {
+            <div class="booking-detail-hero">
+              @if (currentBooking.schedule?.trainThumbnail || currentBooking.trainThumbnail) {
+                <img
+                  [src]="currentBooking.schedule?.trainThumbnail || currentBooking.trainThumbnail || ''"
+                  [alt]="bookingTrainName(currentBooking) + ' train'"
+                />
+              }
+              <h2>{{ bookingOrigin(currentBooking) }} <span aria-hidden="true">→</span> {{ bookingDestination(currentBooking) }}</h2>
+              @if (bookingPrice(currentBooking); as price) {
+                <strong>${{ price }}</strong>
+              }
+            </div>
+            <dl class="booking-details">
+              <div><dt>Train</dt><dd>{{ bookingTrainName(currentBooking) }} #{{ bookingTrainNumber(currentBooking) }}</dd></div>
+              <div><dt>Departure Time</dt><dd>{{ bookingDeparture(currentBooking) }}</dd></div>
+              <div><dt>Coach</dt><dd>{{ bookingCoach(currentBooking) }}</dd></div>
+              @if (bookingPrice(currentBooking); as price) {
+                <div><dt>Ticket Price</dt><dd>${{ price }}</dd></div>
+              }
+              <div><dt>Seat</dt><dd>{{ bookingSeats(currentBooking) }}</dd></div>
+              <div><dt>Travel Date</dt><dd>{{ currentBooking.travelDate | date: 'fullDate' }}</dd></div>
+              @if (currentBooking.bookedOn) {
+                <div><dt>Booked On</dt><dd>{{ currentBooking.bookedOn | date: 'fullDate' }}</dd></div>
+              }
+            </dl>
+
+            <form class="change-date-form" (ngSubmit)="saveBookingDate()">
+              <h3>Change Travel Date</h3>
+              <label for="new-travel-date">New travel date</label>
+              <input
+                id="new-travel-date"
+                class="form-control"
+                type="date"
+                name="bookingDate"
+                [min]="today"
+                [ngModel]="bookingDate()"
+                (ngModelChange)="bookingDate.set($event)"
+              />
+              <div class="form-actions">
+                <button class="btn btn-primary" type="submit" [disabled]="savingBooking()">
+                  {{ savingBooking() ? 'Saving…' : 'Save' }}
+                </button>
+                <a class="text-button" routerLink="/profile/bookings">Cancel</a>
+              </div>
+            </form>
+
+            <div class="danger-actions">
+              <button class="danger-button" type="button" [disabled]="deleting()" (click)="deleteBooking()">
+                {{ deleting() ? 'Deleting…' : 'Delete Booking' }}
+              </button>
+            </div>
+          }
+        </section>
+      } @else {
+        <section class="profile-panel settings-panel">
+          <header class="panel-heading">
+            <h2>Security Settings</h2>
+            <p>Manage your password and account.</p>
+          </header>
+          <form class="settings-form" (ngSubmit)="changePassword()" novalidate>
+            <h3>Change Password</h3>
+            <div class="profile-field">
+              <label for="current-password">Current password</label>
+              <input
+                id="current-password"
+                class="form-control"
+                name="currentPassword"
+                type="password"
+                autocomplete="current-password"
+                [ngModel]="currentPassword()"
+                (ngModelChange)="currentPassword.set($event)"
+              />
+            </div>
+            <div class="profile-field">
+              <label for="new-password">New password</label>
+              <input
+                id="new-password"
+                class="form-control"
+                name="newPassword"
+                type="password"
+                autocomplete="new-password"
+                [ngModel]="newPassword()"
+                (ngModelChange)="newPassword.set($event)"
+              />
+            </div>
+            <button class="btn btn-primary" type="submit" [disabled]="saving()">
+              {{ saving() ? 'Updating…' : 'Update Password' }}
+            </button>
+          </form>
+          <div class="danger-zone">
+            <h3>Danger Zone</h3>
+            <p>Once you delete your account, all data will be permanently removed. This action cannot be undone.</p>
+            @if (confirmProfileDeletion()) {
+              <p role="alert">Delete your account permanently?</p>
+              <button class="danger-button" type="button" [disabled]="deleting()" (click)="deleteProfile()">
+                {{ deleting() ? 'Deleting…' : 'Confirm Delete Account' }}
+              </button>
+              <button class="text-button" type="button" (click)="confirmProfileDeletion.set(false)">Cancel</button>
+            } @else {
+              <button class="danger-button" type="button" (click)="confirmProfileDeletion.set(true)">
+                Delete Account
+              </button>
+            }
+          </div>
+        </section>
+      }
+
+      @if (error() && section !== 'booking-details' && section !== 'bookings') {
+        <p class="profile-error" role="alert">{{ error() }}</p>
+      }
+    </main>
+  </div>
+</section>
